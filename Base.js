@@ -7,10 +7,10 @@ define(function factory(require, exports, module) {
     var Event = require('./Event')
 
     var Base = Class.extend(Event, {
-        CONFIG: {},
+        __config: {},
         setUpConfig: function(config){
             //自动保存配置项
-            this.__config = Class.mix(this.CONFIG || {}, config)
+             Class.mix(this.__config || {}, config)
         },
         init:function(config){
             this.setUpConfig(config);

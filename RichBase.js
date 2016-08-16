@@ -7,6 +7,10 @@ define(function factory(require, exports, module) {
     var Base = require('./Base')
 
     return Base.extend({
+        __config: {
+            container: '',
+            tpl: ''
+        },
         EVENTS:{},
         template:'',
         init:function(config){
@@ -16,12 +20,12 @@ define(function factory(require, exports, module) {
             this._delegateEvent()
             this.setUp()
         },
-        //循环遍历EVENTS，使用jQuery的delegate代理到parentNode
+        //循环遍历EVENTS，使用jQuery的delegate代理到container
         _delegateEvent:function(){
             var self = this
             var events = this.EVENTS || {}
             var eventObjs,fn,select,type
-            var parentNode = this.get('parentNode') || $(document.body)
+            var container = this.get('container') || $(document.body)
 
             for (select in events) {
                 eventObjs = events[select]
@@ -29,7 +33,7 @@ define(function factory(require, exports, module) {
                 for (type in eventObjs) {
                     fn = eventObjs[type]
 
-                    parentNode.delegate(select,type,function(e){
+                    container.delegate(select,type,function(e){
                         fn.call(null,self,e)
                     })
                 }
@@ -81,7 +85,7 @@ define(function factory(require, exports, module) {
             self.set('__currentNode',newHtmlNode)
 
         },
-        //使用data来渲染模板并且append到parentNode下面
+        //使用data来渲染模板并且append到container下面
         render:function(data){
             var self = this
             //先存储起来渲染的data,方便后面setChuckdata获取使用
@@ -93,13 +97,13 @@ define(function factory(require, exports, module) {
             //子类可以覆盖这个方法使用其他的模板引擎解析
             var html = self._parseTemplate(this.template,data)
 
-            var parentNode = this.get('parentNode') || $(document.body)
+            var container = this.get('container') || $(document.body)
 
             var currentNode = $(html)
             //保存下来留待后面的区域刷新
             //存储起来，方便后面setChuckdata获取使用
             self.set('__currentNode',currentNode)
-            parentNode.append(currentNode)
+            container.append(currentNode)
         },
         destroy:function(){
 
@@ -111,7 +115,7 @@ define(function factory(require, exports, module) {
             //去掉绑定的代理事件
             var events = self.EVENTS || {}
             var eventObjs,fn,select,type
-            var parentNode = self.get('parentNode')
+            var container = self.get('container')
 
             for (select in events) {
                 eventObjs = events[select]
@@ -119,7 +123,7 @@ define(function factory(require, exports, module) {
                 for (type in eventObjs) {
                     fn = eventObjs[type]
 
-                    parentNode.undelegate(select,type,fn)
+                    container.undelegate(select,type,fn)
                 }
 
             }

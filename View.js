@@ -8,7 +8,7 @@ define(function factory(require, exports, module) {
     var Store = require('./Store')
 
     return RichBase.extend({
-        CONFIG: {
+        __config: {
             store: null
         },
         init:function(config){
@@ -16,15 +16,15 @@ define(function factory(require, exports, module) {
             this.setUpConfig(config);
             //解析代理事件
             this._delegateEvent()
-            this._fetch()
         },
-        _fetch: function(){
+        load: function(){
             var self = this
-            Store.fetch(this.get('store'))
-                .then(function(data){
+            var promise = Store.fetch(this.get('store'));
+
+            promise.then(function(data){
                     self.setUp(data)
                 })
-                .fail(function(err){
+                .catch(function(err){
                     self.setUp(null)
                 })
         },

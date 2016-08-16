@@ -3,22 +3,13 @@
  * by kingpjchen 20160813
  */
 define(function factory(require, exports, module) {
-    var Store = require('./Store')
+    var StoreForGC = require('./StoreForGC')
     var cache 	= require('util/cacheData')
 
-    var StoreOfClient = Store.extend({
-        CONFIG:{
+    var StoreOfServer = StoreForGC.extend({
+        __config:{
             params: {},
             syncData: null
-        },
-        init:function(config){
-            //自动保存配置项
-            this.setUpConfig(config);
-            this.fetch()
-        },
-        //提供给子类覆盖实现
-        proxy: function(params, callback){
-
         },
         //提供给子类覆盖实现
         parse: function(json){
@@ -44,6 +35,6 @@ define(function factory(require, exports, module) {
         }
     })
 
-    Store.fetch = function(){}
+    return StoreOfServer
 })
 

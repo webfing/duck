@@ -7,13 +7,12 @@ define(function factory(require, exports, module) {
     var Event = require('./Event')
 
     var Store = Base.extend(Event, {
-        CONFIG:{
+        __config:{
             params: {}
         },
         init:function(config){
             //自动保存配置项
             this.setUpConfig(config);
-            this.fetch()
         },
         //提供给子类覆盖实现
         proxy: function(params, callback){
@@ -35,13 +34,13 @@ define(function factory(require, exports, module) {
                 return cacheDeferr
             }
             return new Promise(function(resolve, reject){
-                this.proxy(this.get('params'), function(err, data){
-                    if(err){
+                self.proxy(self.get('params'), function(err, data){
+                    if(!err){
                         resolve(data);
                     }else{
                         reject(data);
                     }
-                    this.fire('afterfetch', data)
+                    self.fire('afterfetch', data)
                 })
             })
         },
@@ -51,6 +50,14 @@ define(function factory(require, exports, module) {
         }
     })
 
-    Store.fetch = function(){}
+    Store.fetch = function(stores){
+        stores = Object.prototype.toString.call(stores) == '[object Array]'? stores: [stores];
+        var promises = stores.map(function(item){
+            return item.fetch();
+        });
+        return Promise.all(promises)
+    }
+
+    return Store
 })
 
