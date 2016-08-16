@@ -29,8 +29,6 @@ define(function factory(require, exports, module) {
         }
     })
 
-    Base.defaultConfig = {}
-
     return Base
 })
 

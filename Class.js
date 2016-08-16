@@ -11,6 +11,16 @@ define(function factory(require, exports, module) {
         }
     }
 
+    var _namespace = function(context, ns) {
+        if(!context) return context;
+        var nodes = ns.split('.');
+        var node
+        while((node = nodes.shift()) && context) {
+            context = context[node]
+        }
+        return context;
+    }
+
     var _extend = function() {
 
         //开关 用来使生成原型时,不调用真正的构成流程init
@@ -48,6 +58,7 @@ define(function factory(require, exports, module) {
     //为超级父类添加extend方法
     Class.extend = _extend
     Class.mix = _mix
+    Class.namespace = _namespace()
 
     return Class
 })

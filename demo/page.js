@@ -7,11 +7,11 @@ var page = PageView({
         content: '游戏中心视频，欢迎',
         icon: ''
     },
-    share: function(){
-        gameinfo.fetch().then(function(){
-            page.setShare()
-        })
-    },
+    //share: function(){
+    //    gameinfo.fetch().then(function(){
+    //        page.setShare()
+    //    })
+    //},
     pvReport: {
 
     },

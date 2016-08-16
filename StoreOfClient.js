@@ -4,11 +4,12 @@
  */
 define(function factory(require, exports, module) {
     var Store = require('./Store')
-    var cacheData 	= require('util/cacheData')
+    var cache 	= require('util/cacheData')
 
     var StoreOfClient = Store.extend({
         CONFIG:{
-            params: {}
+            params: {},
+            syncData: null
         },
         init:function(config){
             //自动保存配置项
@@ -25,7 +26,35 @@ define(function factory(require, exports, module) {
         },
         //提供给子类覆盖实现
         fetchFromCache: function(){
-
+            var self = this, cacheData
+            return new Promise(function(resolve, reject){
+                if(cacheData = self.readSyncData()) {
+                    resolve(cacheData)
+                }else if(cacheData = self.readLocalStorageData()){
+                    resolve(cacheData)
+                }else {
+                    reject(null)
+                }
+            })
+        },
+        readSyncData: function(){
+            if(this.__memoryData) return this.__memoryData
+            var syncDataCfg = this.get('syncData')
+            if(!syncDataCfg) return
+            return this.__memoryData = this.namespace(window, 'syncData.DATA.'+syncDataCfg)
+        },
+        getCacheKey: function(){
+            var keys = [this.get('server'), this.get('module'), this.get('method')]
+            var params = this.get('params')
+            for(var i in params) {
+                if (params.hasOwnProperty(i)) {
+                    keys.push(i+':'+params[i])
+                }
+            }
+            return keys.join('_')
+        },
+        readLocalStorageData: function(){
+            return cache.get(this.getCacheKey());
         },
         fetch: function(){
             var self = this
