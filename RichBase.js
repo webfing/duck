@@ -12,7 +12,6 @@ define(function factory(require, exports, module) {
             tpl: ''
         },
         EVENTS:{},
-        template:'',
         init:function(config){
             //存储配置项
             this.setUpConfig(config);
@@ -69,13 +68,14 @@ define(function factory(require, exports, module) {
         setChuckdata:function(key,value){
             var self = this
             var data = self.get('__renderData')
+            var tpl = self.get('tpl')
 
             //更新对应的值
             data[key] = value
 
-            if (!this.template) return;
+            if (!tpl) return;
             //重新渲染
-            var newHtmlNode = $(self._parseTemplate(this.template,data))
+            var newHtmlNode = $(self._parseTemplate(tpl,data))
             //拿到存储的渲染后的节点
             var currentNode = self.get('__currentNode')
             if (!currentNode) return;
@@ -88,14 +88,24 @@ define(function factory(require, exports, module) {
         //使用data来渲染模板并且append到container下面
         render:function(data){
             var self = this
+            var tpl = self.get('tpl')
+            var template
             //先存储起来渲染的data,方便后面setChuckdata获取使用
             self.set('__renderData',data)
 
-            if (!this.template) return;
+            if (!tpl) return;
+
+            if(Object.prototype.toString.call(tpl) == '[object Function]'){
+                template = tpl
+            }else if(Object.prototype.toString.call(tpl) == '[object String]'){
+                template = self._parseTemplate(tpl)
+            }else if(typeof tpl == 'object'){
+                template = tpl.html()
+            }
 
             //使用_parseTemplate解析渲染模板生成html
             //子类可以覆盖这个方法使用其他的模板引擎解析
-            var html = self._parseTemplate(this.template,data)
+            var html = template(data)
 
             var container = this.get('container') || $(document.body)
 

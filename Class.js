@@ -3,23 +3,8 @@
  * by kingpjchen 20160813
  */
 define(function factory(require, exports, module) {
-    var _mix = function(r, s) {
-        for (var p in s) {
-            if (s.hasOwnProperty(p)) {
-                r[p] = s[p]
-            }
-        }
-    }
 
-    var _namespace = function(context, ns) {
-        if(!context) return context;
-        var nodes = ns.split('.');
-        var node
-        while((node = nodes.shift()) && context) {
-            context = context[node]
-        }
-        return context;
-    }
+    var tools = require('./tools')
 
     var _extend = function() {
 
@@ -33,7 +18,7 @@ define(function factory(require, exports, module) {
 
         //支持混入多个属性，并且支持{}也支持 Function
         while (item = items.shift()) {
-            _mix(prototype, item.prototype || item)
+            tools.mix(prototype, item.prototype || item)
         }
 
         // 这边是返回的类，其实就是我们返回的子类
@@ -57,8 +42,6 @@ define(function factory(require, exports, module) {
     var Class = function() {}
     //为超级父类添加extend方法
     Class.extend = _extend
-    Class.mix = _mix
-    Class.namespace = _namespace()
 
     return Class
 })

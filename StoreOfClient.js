@@ -5,15 +5,12 @@
 define(function factory(require, exports, module) {
     var StoreForGC = require('./StoreForGC')
     var cache 	= require('util/cacheData')
+    var tools = require('./tools')
 
     var StoreOfClient = StoreForGC.extend({
         __config:{
             params: {},
             syncData: null
-        },
-        //提供给子类覆盖实现
-        parse: function(json){
-
         },
         //提供给子类覆盖实现
         fetchFromCache: function(){
@@ -32,7 +29,7 @@ define(function factory(require, exports, module) {
             if(this.__memoryData) return this.__memoryData
             var syncDataCfg = this.get('syncData')
             if(!syncDataCfg) return
-            return this.__memoryData = this.namespace(window, 'syncData.DATA.'+syncDataCfg)
+            return this.__memoryData = tools.namespace(window, 'syncData.DATA.'+syncDataCfg)
         },
         getCacheKey: function(){
             var keys = [this.get('server'), this.get('module'), this.get('method')]
@@ -67,7 +64,7 @@ define(function factory(require, exports, module) {
         }
     })
 
-    StoreOfClient.fetch = function(){}
+    //StoreOfClient.fetch = function(){}
 
     return StoreOfClient
 })

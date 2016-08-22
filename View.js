@@ -9,7 +9,8 @@ define(function factory(require, exports, module) {
 
     return RichBase.extend({
         __config: {
-            store: null
+            store: null,
+            parse: null
         },
         init:function(config){
             //存储配置项
@@ -29,8 +30,9 @@ define(function factory(require, exports, module) {
                 })
         },
         //提供给子类覆盖实现
-        setUp:function(){
-            this.render()
+        setUp:function(data){
+            var parse = this.get('parse');
+            this.render(parse? parse.apply(this, data): data)
         }
     })
 

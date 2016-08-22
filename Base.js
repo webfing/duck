@@ -5,12 +5,13 @@
 define(function factory(require, exports, module) {
     var Class = require('./Class')
     var Event = require('./Event')
+    var tools = require('./tools')
 
     var Base = Class.extend(Event, {
         __config: {},
         setUpConfig: function(config){
             //自动保存配置项
-             Class.mix(this.__config || {}, config)
+            tools.mix(this.__config || {}, config)
         },
         init:function(config){
             this.setUpConfig(config);

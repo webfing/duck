@@ -5,6 +5,7 @@
 define(function factory(require, exports, module) {
     var Base = require('./Base')
     var Event = require('./Event')
+    var tools = require('./tools')
 
     var Store = Base.extend(Event, {
         __config:{
@@ -20,7 +21,7 @@ define(function factory(require, exports, module) {
         },
         //提供给子类覆盖实现
         parse: function(data){
-
+            return data;
         },
         //提供给子类覆盖实现
         fetchFromCache: function(){
@@ -35,12 +36,14 @@ define(function factory(require, exports, module) {
             }
             return new Promise(function(resolve, reject){
                 self.proxy(self.get('params'), function(err, data){
-                    if(!err){
-                        resolve(data);
+                    self.__rawData = data;
+                    var parseData = self.parse(tools.mix({}, data))
+                    if(!err && parseData){
+                        resolve(parseData);
                     }else{
-                        reject(data);
+                        reject(parseData);
                     }
-                    self.fire('afterfetch', data)
+                    self.fire('afterfetch', parseData)
                 })
             })
         },

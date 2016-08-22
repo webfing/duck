@@ -8,7 +8,12 @@ define(function factory(require, exports, module) {
     var router  = require('business/router')
 
     var StoreForGC = Store.extend({
-        //提供给子类覆盖实现
+        parse: function(data){
+            var acceptResults = this.get('acceptResults') || [0];
+            if(data && ~acceptResults.indexOf(data.result) && data.data){
+                return data.data
+            }
+        },
         proxy: function(params, callback){
             var self = this;
             var path = self.server.indexOf("http")==0? self.server: '/cgi-bin/'+self.server;
